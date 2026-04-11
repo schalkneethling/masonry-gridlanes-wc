@@ -29,7 +29,7 @@ jobs:
 
       - name: Check out repository
         if: ${{ steps.release.outputs.releases_created == 'true' }}
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up Vite+
         if: ${{ steps.release.outputs.releases_created == 'true' }}
