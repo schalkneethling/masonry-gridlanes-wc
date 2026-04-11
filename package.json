@@ -1,0 +1,70 @@
+{
+  "name": "@schalkneethling/masonry-gridlanes-wc",
+  "version": "0.1.0",
+  "description": "Light-DOM custom element for CSS Grid Lanes masonry with a JS fallback; Pretext helpers are exported separately for headless text metrics.",
+  "homepage": "https://github.com/schalkneethling/masonry-gridlanes-wc#readme",
+  "bugs": {
+    "url": "https://github.com/schalkneethling/masonry-gridlanes-wc/issues"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/schalkneethling/masonry-gridlanes-wc.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "./headless": {
+      "types": "./dist/headless.d.mts",
+      "default": "./dist/headless.mjs"
+    },
+    "./pretext": {
+      "types": "./dist/pretext-entry.d.mts",
+      "default": "./dist/pretext-entry.mjs"
+    },
+    "./pretext-entry": {
+      "types": "./dist/pretext-entry.d.mts",
+      "default": "./dist/pretext-entry.mjs"
+    },
+    "./masonry-grid-lanes.css": "./dist/masonry-grid-lanes.css",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vp pack",
+    "dev": "vp pack --watch",
+    "demo": "vp dev --host 127.0.0.1 --port 5173",
+    "test": "vp test",
+    "test:e2e": "playwright test",
+    "check": "vp check src tests e2e demos playwright.config.ts vite.config.ts package.json tsconfig.json",
+    "prepublishOnly": "vp run build",
+    "prepare": "vp config"
+  },
+  "dependencies": {
+    "@chenglou/pretext": "^0.0.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.5.0",
+    "@typescript/native-preview": "7.0.0-dev.20260328.1",
+    "bumpp": "^11.0.1",
+    "happy-dom": "^20.8.9",
+    "typescript": "^6.0.2",
+    "vite-plus": "^0.1.14"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "pnpm": {
+    "overrides": {
+      "vite": "npm:@voidzero-dev/vite-plus-core@latest",
+      "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
+    }
+  }
+}

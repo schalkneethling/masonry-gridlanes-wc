@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>column fallback placement fixture</title>
+    <script type="module">
+      import { adoptMasonryGridLanesStyles, defineMasonryGridLanes } from "/src/index.js";
+
+      await adoptMasonryGridLanesStyles(document);
+      defineMasonryGridLanes();
+
+      const host = document.createElement("masonry-grid-lanes");
+      host.setAttribute("gap", "10");
+      host.setAttribute("min-column-width", "100");
+      host.style.display = "block";
+      host.style.width = "430px";
+
+      const hero = document.createElement("article");
+      hero.textContent = "hero";
+      hero.style.gridColumnStart = "auto";
+      hero.style.gridColumnEnd = "span 2";
+      hero.style.height = "70px";
+
+      const aside = document.createElement("article");
+      aside.textContent = "aside";
+      aside.style.order = "-1";
+      aside.style.height = "40px";
+
+      const pinned = document.createElement("article");
+      pinned.textContent = "pinned";
+      pinned.style.gridColumn = "4 / 5";
+      pinned.style.height = "40px";
+
+      host.append(hero, aside, pinned);
+      document.body.appendChild(host);
+
+      requestAnimationFrame(() => {
+        window.__MGL_COLUMN_FALLBACK_READY = true;
+      });
+    </script>
+  </head>
+  <body></body>
+</html>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Demo · Row lanes</title>
+    <link rel="stylesheet" href="/demos/demos-theme.css" />
+  </head>
+  <body>
+    <div class="demo-wrap">
+      <a class="demo-back" href="/demos/index.html">← Demos</a>
+      <p class="demo-kicker">Grid Lanes · Rows</p>
+      <h1 class="demo-title">Row lanes</h1>
+      <p class="demo-lede">
+        A dedicated row-mode demo using constrained card widths, compact copy, and fixed-height
+        media. This is the authoring pattern that makes horizontal masonry useful instead of
+        surprising.
+      </p>
+      <p id="status" class="demo-status" aria-live="polite"></p>
+
+      <div class="demo-grid-shell">
+        <masonry-grid-lanes
+          class="demo-grid-host demo-grid-host--rows"
+          mode="rows"
+          row-count="3"
+          min-row-height="220"
+          gap="18"
+          style="height: 340px"
+        >
+        </masonry-grid-lanes>
+      </div>
+
+      <footer class="demo-foot">
+        <p>
+          Row lanes grow horizontally. In practice that means authors should give cards intentional
+          inline-size limits, decide how many rows they want, and let the masonry surface scroll,
+          rather than expecting an unconstrained mixed-media wall to stay compact automatically.
+        </p>
+      </footer>
+    </div>
+    <script type="module" src="/demos/js/rows-demo.js"></script>
+  </body>
+</html>

@@ -1,0 +1,74 @@
+/**
+ * Default styles for <masonry-grid-lanes>.
+ * Authors may omit this sheet and supply equivalent rules using the same
+ * custom properties and state classes.
+ */
+
+masonry-grid-lanes {
+  box-sizing: border-box;
+  /* Custom elements default to `inline`; block formatting establishes width/flow and a
+     proper containing block for fallback `position: absolute` children. */
+  display: block;
+  /*
+   * Always establish a positioning context. If this were `static`, abs-positioned
+   * children would use the next positioned ancestor (often a parent with
+   * `position: relative`), making `top`/`left` relative to that ancestor instead of
+   * this host — e.g. covering preceding siblings inside the same wrapper.
+   */
+  position: relative;
+}
+
+masonry-grid-lanes *,
+masonry-grid-lanes *::before,
+masonry-grid-lanes *::after {
+  box-sizing: inherit;
+}
+
+/* Native grid-lanes (Safari Technology Preview and future engines) */
+masonry-grid-lanes.masonry-grid-lanes--supports {
+  display: grid-lanes;
+  grid-template-columns: var(
+    --mgl-template-columns,
+    repeat(auto-fill, minmax(min(100%, var(--mgl-min-column, 12.5rem)), 1fr))
+  );
+  grid-template-rows: var(--mgl-template-rows, none);
+  gap: var(--mgl-gap, 0rem);
+  flow-tolerance: var(--mgl-flow-tolerance, 1em);
+}
+
+masonry-grid-lanes.masonry-grid-lanes--supports[data-mgl-mode="rows"] {
+  grid-template-columns: none;
+  grid-template-rows: var(
+    --mgl-template-rows,
+    repeat(
+      var(--mgl-row-count, auto-fill),
+      minmax(min(100%, var(--mgl-min-row, var(--mgl-min-column, 7.5rem))), 1fr)
+    )
+  );
+}
+
+/* JS fallback: column (waterfall) packing — mirrors `grid-template-columns` masonry */
+masonry-grid-lanes.masonry-grid-lanes--fallback:not([data-mgl-mode="rows"]) {
+  inline-size: 100%;
+  min-block-size: var(--mgl-fallback-min-height, 0rem);
+}
+
+/* JS fallback: row (brick) packing — mirrors `grid-template-rows` masonry */
+masonry-grid-lanes.masonry-grid-lanes--fallback[data-mgl-mode="rows"] {
+  inline-size: 100%;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  min-block-size: var(--mgl-fallback-pack-height, 15rem);
+  overflow-inline: auto;
+  overflow-block: hidden;
+}
+
+masonry-grid-lanes.masonry-grid-lanes--fallback > * {
+  position: absolute;
+  margin: 0;
+}
+
+/* During measurement, JS sets this attribute so children are in normal flow. */
+masonry-grid-lanes.masonry-grid-lanes--fallback[data-mgl-measuring="true"] > * {
+  position: static;
+}

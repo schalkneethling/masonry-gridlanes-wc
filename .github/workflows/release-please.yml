@@ -1,0 +1,66 @@
+name: Release Please
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+concurrency:
+  group: release-please-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run release-please
+        id: release
+        uses: googleapis/release-please-action@v4
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+      - name: Check out repository
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        uses: actions/checkout@v5
+
+      - name: Set up Vite+
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        uses: voidzero-dev/setup-vp@v1
+        with:
+          node-version: "22"
+          cache: true
+
+      - name: Install dependencies
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        run: vp install --frozen-lockfile
+
+      - name: Verify checks
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        run: vp check src tests e2e demos playwright.config.ts vite.config.ts package.json tsconfig.json
+
+      - name: Run unit tests
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        run: vp test
+
+      - name: Build package
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        run: vp pack
+
+      - name: Set up npm registry
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: Publish to npm
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        run: npm publish --access public --provenance

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Demo · Bluesky text masonry</title>
+    <link rel="stylesheet" href="/demos/demos-theme.css" />
+  </head>
+  <body>
+    <div class="demo-wrap">
+      <a class="demo-back" href="/demos/index.html">← Demos</a>
+      <p class="demo-kicker">Bluesky · @schalkneethling.com</p>
+      <h1 class="demo-title">Text-only masonry</h1>
+      <p class="demo-lede">
+        Public author feed; embeds and link cards are ignored so this page can lean into Pretext’s
+        actual strengths. Once the
+        <a href="https://fonts.google.com/specimen/Spectral">Spectral</a> webfont is ready, the demo
+        reads the tile styles once, prepares every post up front, and reuses Pretext’s
+        <code>layout()</code> math on resize instead of remeasuring each tile in the DOM. Like the
+        original <a href="https://chenglou.me/pretext/masonry/">masonry demo</a>, it also keeps only
+        the visible cards mounted.
+      </p>
+      <p id="status" class="demo-status" aria-live="polite"></p>
+
+      <masonry-grid-lanes class="demo-grid-host" min-column-width="280" gap="16">
+      </masonry-grid-lanes>
+
+      <footer class="demo-foot">
+        <p>
+          Data from <code>app.bsky.feed.getAuthorFeed</code> via
+          <a href="https://public.api.bsky.app" target="_blank" rel="noopener noreferrer"
+            >public.api.bsky.app</a
+          >. This demo is read-only and stores nothing.
+        </p>
+      </footer>
+    </div>
+    <script type="module" src="/demos/js/bluesky-text-demo.js"></script>
+  </body>
+</html>

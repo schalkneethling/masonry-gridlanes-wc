@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>row fallback e2e (imperative)</title>
+    <link rel="stylesheet" href="/src/masonry-grid-lanes.css" />
+  </head>
+  <body>
+    <script type="module">
+      import { defineMasonryGridLanes } from "/src/index.js";
+
+      defineMasonryGridLanes();
+
+      const host = document.createElement("masonry-grid-lanes");
+      host.setAttribute("mode", "rows");
+      host.setAttribute("min-row-height", "40");
+      host.setAttribute("gap", "4");
+      host.style.display = "block";
+      host.style.width = "400px";
+      host.style.minHeight = "120px";
+
+      const a = document.createElement("div");
+      a.style.width = "60px";
+      a.style.height = "30px";
+      const b = document.createElement("div");
+      b.style.width = "40px";
+      b.style.height = "30px";
+      host.append(a, b);
+      document.body.appendChild(host);
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          window.__MGL_ROW_FALLBACK_READY = true;
+        });
+      });
+    </script>
+  </body>
+</html>

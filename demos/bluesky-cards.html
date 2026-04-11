@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Demo · Bluesky cards</title>
+    <link rel="stylesheet" href="/demos/demos-theme.css" />
+  </head>
+  <body>
+    <div class="demo-wrap">
+      <a class="demo-back" href="/demos/index.html">← Demos</a>
+      <p class="demo-kicker">Bluesky · @schalkneethling.com</p>
+      <h1 class="demo-title">Card masonry</h1>
+      <p class="demo-lede">
+        Each post becomes a card: when the public API exposes a thumbnail (link preview, image
+        embed, or video poster), it appears above the text. Posts without embed imagery are
+        text-only cards.
+      </p>
+      <p id="status" class="demo-status" aria-live="polite"></p>
+
+      <masonry-grid-lanes class="demo-grid-host" min-column-width="260" gap="18">
+      </masonry-grid-lanes>
+
+      <footer class="demo-foot">
+        <p>
+          Thumbnails are served by Bluesky/CDN as returned by the API. No media is re-hosted by this
+          demo.
+        </p>
+      </footer>
+    </div>
+    <script type="module" src="/demos/js/bluesky-cards-demo.js"></script>
+  </body>
+</html>

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>row fallback e2e (declarative)</title>
+    <link rel="stylesheet" href="/src/masonry-grid-lanes.css" />
+  </head>
+  <body>
+    <masonry-grid-lanes
+      mode="rows"
+      min-row-height="40"
+      gap="4"
+      style="display: block; width: 400px; min-height: 120px"
+    >
+      <div style="width: 60px; height: 30px"></div>
+      <div style="width: 40px; height: 30px"></div>
+    </masonry-grid-lanes>
+
+    <script type="module">
+      import { defineMasonryGridLanes } from "/src/index.js";
+
+      defineMasonryGridLanes();
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          window.__MGL_ROW_FALLBACK_READY = true;
+        });
+      });
+    </script>
+  </body>
+</html>

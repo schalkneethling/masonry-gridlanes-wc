@@ -1,0 +1,1 @@
+../.agents/agents/technical-devils-advocate.md

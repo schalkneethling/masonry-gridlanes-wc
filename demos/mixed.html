@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Demo · Mixed masonry</title>
+    <link rel="stylesheet" href="/demos/demos-theme.css" />
+  </head>
+  <body>
+    <div class="demo-wrap">
+      <a class="demo-back" href="/demos/index.html">← Demos</a>
+      <p class="demo-kicker">Unsplash + Bluesky</p>
+      <h1 class="demo-title">Mixed wall</h1>
+      <p class="demo-lede">
+        A single stream alternating Unsplash figures, Bluesky text tiles (Pretext), and Bluesky
+        media cards — closest to a heterogeneous “for you” style surface.
+      </p>
+      <p id="status" class="demo-status" aria-live="polite"></p>
+
+      <masonry-grid-lanes class="demo-grid-host" min-column-width="250" gap="16">
+      </masonry-grid-lanes>
+
+      <footer class="demo-foot">
+        <p>
+          Combines curated Unsplash hotlinks and live Bluesky public feed items. If the feed fails,
+          Unsplash tiles still render.
+        </p>
+      </footer>
+    </div>
+    <script type="module" src="/demos/js/mixed-demo.js"></script>
+  </body>
+</html>

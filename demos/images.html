@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Demo · Image masonry</title>
+    <link rel="stylesheet" href="/demos/demos-theme.css" />
+  </head>
+  <body>
+    <div class="demo-wrap">
+      <a class="demo-back" href="/demos/index.html">← Demos</a>
+      <p class="demo-kicker">Unsplash</p>
+      <h1 class="demo-title">Image masonry</h1>
+      <p class="demo-lede">
+        Varied crops and aspect ratios. Each load shuffles a subset of curated photos so column
+        packing stays interesting.
+      </p>
+      <p id="status" class="demo-status" aria-live="polite"></p>
+
+      <masonry-grid-lanes class="demo-grid-host" min-column-width="240" gap="18">
+      </masonry-grid-lanes>
+
+      <footer class="demo-foot">
+        <p>
+          Photos from
+          <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer">Unsplash</a> (see
+          per-image credits under each tile). Hotlinking is acceptable for this demo; production
+          apps should use the
+          <a href="https://unsplash.com/developers" target="_blank" rel="noopener noreferrer"
+            >Unsplash API</a
+          >
+          and their
+          <a href="https://unsplash.com/terms" target="_blank" rel="noopener noreferrer">terms</a>.
+        </p>
+      </footer>
+    </div>
+    <script type="module" src="/demos/js/images-demo.js"></script>
+  </body>
+</html>

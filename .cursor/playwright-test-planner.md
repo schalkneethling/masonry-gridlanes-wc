@@ -1,0 +1,1 @@
+../.agents/agents/playwright-test-planner.md

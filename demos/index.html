@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Masonry grid lanes — demos</title>
+    <link rel="stylesheet" href="/demos/demos-theme.css" />
+  </head>
+  <body>
+    <div class="demo-wrap">
+      <header class="demo-hub-hero">
+        <p class="demo-kicker">Interactive demos</p>
+        <h1 class="demo-title">Masonry in the browser</h1>
+        <p class="demo-lede">
+          Seven live layouts using <code>&lt;masonry-grid-lanes&gt;</code>: native grid-lanes where
+          available, JavaScript fallback elsewhere. Open any demo while running the Vite dev server.
+        </p>
+      </header>
+
+      <nav class="demo-hub-grid" aria-label="Demo pages">
+        <a class="demo-hub-card" href="/demos/images.html">
+          <h2>Image masonry</h2>
+          <p>Unsplash photography at mixed aspect ratios — lazy-loaded, shuffled on each visit.</p>
+          <span class="demo-hub-meta">Images only</span>
+        </a>
+        <a class="demo-hub-card" href="/demos/bluesky-text.html">
+          <h2>Text stream</h2>
+          <p>
+            Posts from Bluesky (<span translate="no">@schalkneethling.com</span>) as plain text
+            tiles with Pretext height hints.
+          </p>
+          <span class="demo-hub-meta">Text only · API</span>
+        </a>
+        <a class="demo-hub-card" href="/demos/bluesky-cards.html">
+          <h2>Social cards</h2>
+          <p>
+            Same feed with link-preview thumbnails and video posters where present; text-only when
+            there is no embed image.
+          </p>
+          <span class="demo-hub-meta">Media + text</span>
+        </a>
+        <a class="demo-hub-card" href="/demos/mixed.html">
+          <h2>Mixed wall</h2>
+          <p>
+            Unsplash tiles interleaved with Bluesky text and media cards — one heterogeneous stream.
+          </p>
+          <span class="demo-hub-meta">Combined</span>
+        </a>
+        <a class="demo-hub-card" href="/demos/rows.html">
+          <h2>Row lanes</h2>
+          <p>
+            A horizontal masonry demo with compact, width-bounded cards that shows how row mode is
+            meant to be authored.
+          </p>
+          <span class="demo-hub-meta">Rows · constrained</span>
+        </a>
+        <a class="demo-hub-card" href="/demos/reference-switch.html">
+          <h2>Direction switcher</h2>
+          <p>
+            A compact reference demo that toggles the same cards between fixed-column and fixed-row
+            masonry.
+          </p>
+          <span class="demo-hub-meta">Reference · row-count</span>
+        </a>
+        <a class="demo-hub-card" href="/demos/playground.html">
+          <h2>Playground</h2>
+          <p>
+            A live control panel for toggling and tuning the custom element attributes against the
+            mixed wall.
+          </p>
+          <span class="demo-hub-meta">Interactive</span>
+        </a>
+      </nav>
+
+      <footer class="demo-foot">
+        <p>
+          Run <code>vp run demo</code> from the repo root, then open this page. Bluesky data is read
+          from the public
+          <a href="https://docs.bsky.app/" target="_blank" rel="noopener noreferrer">AT Proto</a>
+          API (no auth).
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
