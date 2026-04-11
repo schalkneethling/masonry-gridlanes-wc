@@ -134,17 +134,17 @@ Format results clearly for the user:
 
 - Show the property name and where it's used
 - **CRITICAL**: Present suggestions thoughtfully based on their type:
-  
+
   **For likely typos** (high similarity > 0.85):
   - "This looks like a typo. Did you mean `--spacing-md`?"
   - Safe to suggest specific correction
-  
+
   **For semantic choices** (category tokens shown):
   - "This property doesn't exist. Here are available [category] tokens:"
   - List the category tokens (e.g., available color tokens, spacing tokens)
   - "Which one fits your intent? Or should I add this as a new token?"
   - **DO NOT** suggest a specific token - let the user choose
-  
+
 - Point the user to token source files when needed
 - These require action from the user
 
@@ -200,7 +200,7 @@ Based on findings, recommend actions:
 
 - Look for files with `:root` or custom property definitions
 - Common locations: `tokens/`, `design-system/`, `styles/variables/`
-- Respect naming conventions (tokens.css, _variables.css, etc.)
+- Respect naming conventions (tokens.css, \_variables.css, etc.)
 
 **Validation Scope:**
 
@@ -250,9 +250,9 @@ User: "Validate Card.css tokens"
 3. Available color tokens found: --color-primary-dark, --color-primary-light, --color-accent
 4. Present: "`--color-primary-hover` doesn't exist. Available color tokens:
    - --color-primary-dark
-   - --color-primary-light  
+   - --color-primary-light
    - --color-accent
-   
+
    Which one should be used for the hover state? Or should I add --color-primary-hover as a new token?"
 5. Wait for user decision
 ```

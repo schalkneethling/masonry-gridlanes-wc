@@ -2,18 +2,18 @@
 
 /**
  * CSS Token Use Validator v2
- * 
+ *
  * Validates that CSS custom properties used in stylesheets are properly
  * defined in token files. Detects undefined properties, unused tokens,
  * component-scoped properties, and provides context-aware suggestions.
- * 
+ *
  * Usage:
  *   node validator.js --tokens "path/to/tokens/*.css" --css "path/to/files/*.css"
  */
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+const fs = require("fs");
+const path = require("path");
+const { execSync } = require("child_process");
 
 // =============================================================================
 // Configuration and Arguments
@@ -24,9 +24,9 @@ function parseArguments() {
   const config = {
     tokens: null,
     css: null,
-    format: 'json',
+    format: "json",
     threshold: 0.7,
-    ignore: []
+    ignore: [],
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -34,28 +34,28 @@ function parseArguments() {
     const nextArg = args[i + 1];
 
     switch (arg) {
-      case '--tokens':
+      case "--tokens":
         config.tokens = nextArg;
         i++;
         break;
-      case '--css':
+      case "--css":
         config.css = nextArg;
         i++;
         break;
-      case '--format':
+      case "--format":
         config.format = nextArg;
         i++;
         break;
-      case '--threshold':
+      case "--threshold":
         config.threshold = parseFloat(nextArg);
         i++;
         break;
-      case '--ignore':
-        config.ignore = nextArg.split(',').map(prop => prop.trim());
+      case "--ignore":
+        config.ignore = nextArg.split(",").map((prop) => prop.trim());
         i++;
         break;
-      case '--help':
-      case '-h':
+      case "--help":
+      case "-h":
         printHelp();
         process.exit(0);
         break;
@@ -64,7 +64,7 @@ function parseArguments() {
 
   // Validate required arguments
   if (!config.tokens || !config.css) {
-    console.error('Error: --tokens and --css arguments are required');
+    console.error("Error: --tokens and --css arguments are required");
     printHelp();
     process.exit(1);
   }
@@ -104,16 +104,16 @@ async function findFiles(pattern) {
     // Use shell glob expansion via bash
     // This works reliably across all Node versions and is already available
     const command = `bash -c 'shopt -s globstar nullglob; for f in ${pattern}; do echo "$f"; done'`;
-    const output = execSync(command, { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 });
-    
+    const output = execSync(command, { encoding: "utf8", maxBuffer: 10 * 1024 * 1024 });
+
     const files = output
       .trim()
-      .split('\n')
-      .filter(f => f.length > 0)
-      .map(f => path.resolve(f));
-    
+      .split("\n")
+      .filter((f) => f.length > 0)
+      .map((f) => path.resolve(f));
+
     return files;
-  } catch (error) {
+  } catch {
     // If command fails or no files match, return empty array
     return [];
   }
@@ -121,10 +121,10 @@ async function findFiles(pattern) {
 
 function readFileContent(filePath) {
   try {
-    return fs.readFileSync(filePath, 'utf8');
+    return fs.readFileSync(filePath, "utf8");
   } catch (error) {
     console.error(`Error reading file "${filePath}":`, error.message);
-    return '';
+    return "";
   }
 }
 
@@ -138,30 +138,30 @@ function readFileContent(filePath) {
  */
 function extractDefinitions(content, filePath) {
   const definitions = new Map();
-  
+
   // Match custom property definitions: --property-name: value;
   // This regex handles:
   // - Properties in :root, selectors, or anywhere
   // - Multiline values
   // - Comments within values
   const propertyPattern = /(--[\w-]+)\s*:\s*[^;]+;/g;
-  
+
   let match;
   while ((match = propertyPattern.exec(content)) !== null) {
     const propertyName = match[1];
     const position = match.index;
-    
+
     // Calculate line number for better error reporting
-    const lineNumber = content.substring(0, position).split('\n').length;
-    
+    const lineNumber = content.substring(0, position).split("\n").length;
+
     if (!definitions.has(propertyName)) {
       definitions.set(propertyName, {
         property: propertyName,
-        definedIn: `${path.basename(filePath)}:${lineNumber}`
+        definedIn: `${path.basename(filePath)}:${lineNumber}`,
       });
     }
   }
-  
+
   return definitions;
 }
 
@@ -171,33 +171,33 @@ function extractDefinitions(content, filePath) {
  */
 function extractUsage(content, filePath) {
   const usage = new Map();
-  
+
   // Match var() functions: var(--property-name) or var(--property-name, fallback)
   // This regex handles:
   // - Nested var() functions
   // - Fallback values
   // - Multiple var() on same line
   const varPattern = /var\(\s*(--[\w-]+)(?:\s*,\s*[^)]+)?\)/g;
-  
+
   let match;
   while ((match = varPattern.exec(content)) !== null) {
     const propertyName = match[1];
     const position = match.index;
-    
+
     // Calculate line number
-    const lineNumber = content.substring(0, position).split('\n').length;
+    const lineNumber = content.substring(0, position).split("\n").length;
     const location = `${path.basename(filePath)}:${lineNumber}`;
-    
+
     if (!usage.has(propertyName)) {
       usage.set(propertyName, {
         property: propertyName,
-        usedIn: []
+        usedIn: [],
       });
     }
-    
+
     usage.get(propertyName).usedIn.push(location);
   }
-  
+
   return usage;
 }
 
@@ -211,16 +211,16 @@ function extractUsage(content, filePath) {
  */
 function levenshteinDistance(str1, str2) {
   const matrix = [];
-  
+
   // Initialize matrix
   for (let i = 0; i <= str2.length; i++) {
     matrix[i] = [i];
   }
-  
+
   for (let j = 0; j <= str1.length; j++) {
     matrix[0][j] = j;
   }
-  
+
   // Calculate distances
   for (let i = 1; i <= str2.length; i++) {
     for (let j = 1; j <= str1.length; j++) {
@@ -229,13 +229,13 @@ function levenshteinDistance(str1, str2) {
       } else {
         matrix[i][j] = Math.min(
           matrix[i - 1][j - 1] + 1, // substitution
-          matrix[i][j - 1] + 1,     // insertion
-          matrix[i - 1][j] + 1      // deletion
+          matrix[i][j - 1] + 1, // insertion
+          matrix[i - 1][j] + 1, // deletion
         );
       }
     }
   }
-  
+
   return matrix[str2.length][str1.length];
 }
 
@@ -245,9 +245,9 @@ function levenshteinDistance(str1, str2) {
 function calculateSimilarity(str1, str2) {
   const maxLength = Math.max(str1.length, str2.length);
   if (maxLength === 0) return 1.0;
-  
+
   const distance = levenshteinDistance(str1, str2);
-  return 1 - (distance / maxLength);
+  return 1 - distance / maxLength;
 }
 
 /**
@@ -255,23 +255,37 @@ function calculateSimilarity(str1, str2) {
  * Returns likely category prefix (color, spacing, etc.)
  */
 function detectCategory(propertyName) {
-  const parts = propertyName.toLowerCase().replace(/^--/, '').split('-');
-  
+  const parts = propertyName.toLowerCase().replace(/^--/, "").split("-");
+
   // Common category patterns
   const categories = [
-    'color', 'background', 'border', 'text', 'font',
-    'spacing', 'margin', 'padding', 'gap',
-    'size', 'width', 'height', 'radius',
-    'shadow', 'opacity', 'z-index', 'transition', 'animation'
+    "color",
+    "background",
+    "border",
+    "text",
+    "font",
+    "spacing",
+    "margin",
+    "padding",
+    "gap",
+    "size",
+    "width",
+    "height",
+    "radius",
+    "shadow",
+    "opacity",
+    "z-index",
+    "transition",
+    "animation",
   ];
-  
+
   // Check if first part matches a category
   for (const category of categories) {
     if (parts[0] === category || parts[0].startsWith(category)) {
       return category;
     }
   }
-  
+
   return null;
 }
 
@@ -280,18 +294,18 @@ function detectCategory(propertyName) {
  */
 function findTokensByCategory(undefinedProperty, definitions) {
   const category = detectCategory(undefinedProperty);
-  
+
   if (!category) {
     return [];
   }
-  
+
   const categoryTokens = [];
   for (const definedProperty of definitions.keys()) {
     if (detectCategory(definedProperty) === category) {
       categoryTokens.push(definedProperty);
     }
   }
-  
+
   return categoryTokens;
 }
 
@@ -301,93 +315,98 @@ function findTokensByCategory(undefinedProperty, definitions) {
  */
 function findSuggestions(undefinedProperty, definitions, threshold) {
   const typoSuggestions = [];
-  
+
   // First, look for typos using Levenshtein distance
   for (const definedProperty of definitions.keys()) {
     const similarity = calculateSimilarity(undefinedProperty, definedProperty);
-    
+
     if (similarity >= threshold && similarity < 1.0) {
       typoSuggestions.push({
         property: definedProperty,
-        similarity: similarity
+        similarity: similarity,
       });
     }
   }
-  
+
   // Sort by similarity (highest first)
   typoSuggestions.sort((a, b) => b.similarity - a.similarity);
-  
+
   const result = {
     typos: [],
-    categoryTokens: []
+    categoryTokens: [],
   };
-  
+
   // If typo similarity is very high (>= 0.85), it's likely a typo
   // Show ONLY typo suggestions
   if (typoSuggestions.length > 0 && typoSuggestions[0].similarity >= 0.85) {
-    result.typos = typoSuggestions.slice(0, 3).map(s => s.property);
+    result.typos = typoSuggestions.slice(0, 3).map((s) => s.property);
   } else {
     // Otherwise, show category matches for semantic selection
     result.categoryTokens = findTokensByCategory(undefinedProperty, definitions);
   }
-  
+
   return result;
 }
 
 /**
  * Analyze token usage and generate report
  */
-function analyzeTokens(tokenDefinitions, componentDefinitions, allDefinitions, usage, ignoredProperties, threshold) {
-  const undefined = [];
+function analyzeTokens(
+  tokenDefinitions,
+  componentDefinitions,
+  allDefinitions,
+  usage,
+  ignoredProperties,
+  threshold,
+) {
+  const undefinedProperties = [];
   const componentScoped = [];
   const unused = [];
-  
+
   // Find undefined and component-scoped properties
   for (const [propertyName, usageInfo] of usage.entries()) {
     if (ignoredProperties.includes(propertyName)) {
       continue;
     }
-    
+
     // Check if property exists anywhere
     if (!allDefinitions.has(propertyName)) {
       // Truly undefined - not in tokens or component files
       const suggestions = findSuggestions(propertyName, tokenDefinitions, threshold);
-      
-      undefined.push({
+
+      undefinedProperties.push({
         property: propertyName,
         usedIn: usageInfo.usedIn,
         typoSuggestions: suggestions.typos,
-        categoryTokens: suggestions.categoryTokens
+        categoryTokens: suggestions.categoryTokens,
       });
     } else if (componentDefinitions.has(propertyName) && !tokenDefinitions.has(propertyName)) {
       // Component-scoped - defined in component file, not in tokens
       componentScoped.push({
         property: propertyName,
         definedIn: componentDefinitions.get(propertyName).definedIn,
-        usedIn: usageInfo.usedIn
+        usedIn: usageInfo.usedIn,
       });
     }
   }
-  
+
   // Find unused token definitions (only check token files, not component-scoped)
   for (const [propertyName, definitionInfo] of tokenDefinitions.entries()) {
     if (!usage.has(propertyName)) {
       unused.push(definitionInfo);
     }
   }
-  
+
   // Calculate statistics
   const totalTokens = tokenDefinitions.size;
   const totalComponentScoped = componentDefinitions.size;
-  const tokensUsed = Array.from(usage.keys()).filter(prop => tokenDefinitions.has(prop)).length;
-  const totalUndefined = undefined.length;
+  const tokensUsed = Array.from(usage.keys()).filter((prop) => tokenDefinitions.has(prop)).length;
+  const totalUndefined = undefinedProperties.length;
   const totalUnused = unused.length;
-  const tokenCoverage = totalTokens > 0 
-    ? ((tokensUsed / totalTokens) * 100).toFixed(1) 
-    : 0;
-  
+  const tokenCoverage = totalTokens > 0 ? ((tokensUsed / totalTokens) * 100).toFixed(1) : 0;
+
   return {
-    undefined,
+    undefined: undefinedProperties,
     componentScoped,
     unused,
     stats: {
@@ -396,8 +415,8 @@ function analyzeTokens(tokenDefinitions, componentDefinitions, allDefinitions, u
       tokensUsed,
       totalUndefined,
       totalUnused,
-      tokenCoverage: parseFloat(tokenCoverage)
-    }
+      tokenCoverage: parseFloat(tokenCoverage),
+    },
   };
 }
 
@@ -411,7 +430,7 @@ function formatJSON(results) {
 
 function formatSummary(results) {
   const { stats } = results;
-  
+
   return `
 Token Validation Summary
 ========================
@@ -425,81 +444,84 @@ Token Coverage:         ${stats.tokenCoverage}%
 }
 
 function formatDetailed(results) {
-  const { undefined, componentScoped, unused, stats } = results;
+  const { undefined: undefinedProperties, componentScoped, unused, stats } = results;
   let output = [];
-  
+
   // Summary section
-  output.push('Token Validation Report');
-  output.push('======================');
-  output.push('');
-  output.push(`Token Coverage: ${stats.tokenCoverage}% (${stats.tokensUsed}/${stats.totalTokens} tokens used)`);
+  output.push("Token Validation Report");
+  output.push("======================");
+  output.push("");
+  output.push(
+    `Token Coverage: ${stats.tokenCoverage}% (${stats.tokensUsed}/${stats.totalTokens} tokens used)`,
+  );
   output.push(`Component-Scoped Properties: ${stats.totalComponentScoped}`);
-  output.push('');
-  
+  output.push("");
+
   // Undefined properties section (true errors)
-  if (undefined.length > 0) {
-    output.push(`Undefined Properties (${undefined.length})`);
-    output.push('-'.repeat(50));
-    output.push('These properties are used but not defined anywhere.');
-    output.push('');
-    
-    for (const item of undefined) {
+  if (undefinedProperties.length > 0) {
+    output.push(`Undefined Properties (${undefinedProperties.length})`);
+    output.push("-".repeat(50));
+    output.push("These properties are used but not defined anywhere.");
+    output.push("");
+
+    for (const item of undefinedProperties) {
       output.push(`${item.property}`);
-      output.push(`  Used in: ${item.usedIn.join(', ')}`);
-      
+      output.push(`  Used in: ${item.usedIn.join(", ")}`);
+
       // Show either typo suggestions OR category tokens, not both
       if (item.typoSuggestions.length > 0) {
-        output.push(`  Likely typo - did you mean: ${item.typoSuggestions.join(', ')}`);
+        output.push(`  Likely typo - did you mean: ${item.typoSuggestions.join(", ")}`);
       } else if (item.categoryTokens.length > 0) {
         const category = detectCategory(item.property);
-        const tokenList = item.categoryTokens.slice(0, 5).join(', ');
-        const more = item.categoryTokens.length > 5 ? ` (and ${item.categoryTokens.length - 5} more)` : '';
+        const tokenList = item.categoryTokens.slice(0, 5).join(", ");
+        const more =
+          item.categoryTokens.length > 5 ? ` (and ${item.categoryTokens.length - 5} more)` : "";
         output.push(`  Available ${category} tokens: ${tokenList}${more}`);
       } else {
         output.push(`  No similar tokens found`);
       }
-      
-      output.push('');
+
+      output.push("");
     }
   } else {
-    output.push('✓ No undefined properties found');
-    output.push('');
+    output.push("✓ No undefined properties found");
+    output.push("");
   }
-  
+
   // Component-scoped properties section (informational)
   if (componentScoped.length > 0) {
     output.push(`Component-Scoped Properties (${componentScoped.length})`);
-    output.push('-'.repeat(50));
-    output.push('These properties are defined and used within component files.');
-    output.push('This is a valid pattern and not an error.');
-    output.push('');
-    
+    output.push("-".repeat(50));
+    output.push("These properties are defined and used within component files.");
+    output.push("This is a valid pattern and not an error.");
+    output.push("");
+
     for (const item of componentScoped) {
       output.push(`${item.property}`);
       output.push(`  Defined in: ${item.definedIn}`);
-      output.push(`  Used in: ${item.usedIn.join(', ')}`);
-      output.push('');
+      output.push(`  Used in: ${item.usedIn.join(", ")}`);
+      output.push("");
     }
   }
-  
+
   // Unused tokens section
   if (unused.length > 0) {
     output.push(`Unused Tokens (${unused.length})`);
-    output.push('-'.repeat(50));
-    output.push('These tokens are defined but not used in the validated CSS files.');
-    output.push('');
-    
+    output.push("-".repeat(50));
+    output.push("These tokens are defined but not used in the validated CSS files.");
+    output.push("");
+
     for (const item of unused) {
       output.push(`${item.property} (defined in ${item.definedIn})`);
     }
-    
-    output.push('');
+
+    output.push("");
   } else {
-    output.push('✓ No unused tokens found');
-    output.push('');
+    output.push("✓ No unused tokens found");
+    output.push("");
   }
-  
-  return output.join('\n');
+
+  return output.join("\n");
 }
 
 // =============================================================================
@@ -508,73 +530,73 @@ function formatDetailed(results) {
 
 async function main() {
   const config = parseArguments();
-  
-  console.error('Starting validation...');
-  
+
+  console.error("Starting validation...");
+
   // Find all token and CSS files
   console.error(`Finding token files: ${config.tokens}`);
   const tokenFiles = await findFiles(config.tokens);
-  
+
   console.error(`Finding CSS files: ${config.css}`);
   const cssFiles = await findFiles(config.css);
-  
+
   if (tokenFiles.length === 0) {
-    console.error('Error: No token files found');
+    console.error("Error: No token files found");
     process.exit(1);
   }
-  
+
   if (cssFiles.length === 0) {
-    console.error('Error: No CSS files found');
+    console.error("Error: No CSS files found");
     process.exit(1);
   }
-  
+
   console.error(`Found ${tokenFiles.length} token file(s)`);
   console.error(`Found ${cssFiles.length} CSS file(s)`);
-  
+
   // Extract all token definitions (from token files)
   const tokenDefinitions = new Map();
-  
+
   for (const filePath of tokenFiles) {
     const content = readFileContent(filePath);
     const definitions = extractDefinitions(content, filePath);
-    
+
     // Merge into token definitions map
     for (const [key, value] of definitions.entries()) {
       if (!tokenDefinitions.has(key)) {
-        tokenDefinitions.set(key, { ...value, source: 'token' });
+        tokenDefinitions.set(key, { ...value, source: "token" });
       }
     }
   }
-  
+
   console.error(`Extracted ${tokenDefinitions.size} token definition(s)`);
-  
+
   // Extract component-scoped definitions (from CSS files being validated)
   const componentDefinitions = new Map();
-  
+
   for (const filePath of cssFiles) {
     const content = readFileContent(filePath);
     const definitions = extractDefinitions(content, filePath);
-    
+
     // Merge into component definitions map
     for (const [key, value] of definitions.entries()) {
       if (!componentDefinitions.has(key)) {
-        componentDefinitions.set(key, { ...value, source: 'component' });
+        componentDefinitions.set(key, { ...value, source: "component" });
       }
     }
   }
-  
+
   console.error(`Extracted ${componentDefinitions.size} component-scoped definition(s)`);
-  
+
   // Combine all definitions for lookup
   const allDefinitions = new Map([...tokenDefinitions, ...componentDefinitions]);
-  
+
   // Extract all property usage
   const allUsage = new Map();
-  
+
   for (const filePath of cssFiles) {
     const content = readFileContent(filePath);
     const usage = extractUsage(content, filePath);
-    
+
     // Merge into global usage map
     for (const [key, value] of usage.entries()) {
       if (!allUsage.has(key)) {
@@ -585,48 +607,48 @@ async function main() {
       }
     }
   }
-  
+
   console.error(`Extracted ${allUsage.size} property usage(s)`);
-  
+
   // Analyze and generate report
   const results = analyzeTokens(
     tokenDefinitions,
     componentDefinitions,
-    allDefinitions, 
-    allUsage, 
-    config.ignore, 
-    config.threshold
+    allDefinitions,
+    allUsage,
+    config.ignore,
+    config.threshold,
   );
-  
+
   // Format output
   let output;
   switch (config.format) {
-    case 'summary':
+    case "summary":
       output = formatSummary(results);
       break;
-    case 'detailed':
+    case "detailed":
       output = formatDetailed(results);
       break;
-    case 'json':
+    case "json":
     default:
       output = formatJSON(results);
       break;
   }
-  
+
   console.log(output);
-  
+
   // Exit with error code if truly undefined properties found (useful for CI/CD)
   if (results.undefined.length > 0) {
     console.error(`\nValidation failed: ${results.undefined.length} undefined properties`);
     process.exit(1);
   }
-  
-  console.error('\nValidation completed successfully');
+
+  console.error("\nValidation completed successfully");
   process.exit(0);
 }
 
 // Run the validator
-main().catch(error => {
-  console.error('Fatal error:', error);
+main().catch((error) => {
+  console.error("Fatal error:", error);
   process.exit(1);
 });

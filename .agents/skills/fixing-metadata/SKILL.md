@@ -16,9 +16,11 @@ license: MIT
 3. Ensure title, description, canonical, and og:url all agree with each other
 4. Verify social cards render correctly on a real URL, not localhost
 5. Keep diffs minimal and scoped to metadata only — do not refactor unrelated code
+
 ## when to apply
 
 Reference these guidelines when:
+
 - adding or changing page titles, descriptions, canonical, robots
 - implementing Open Graph or Twitter card metadata
 - setting favicons, app icons, manifest, theme-color
@@ -29,16 +31,16 @@ Reference these guidelines when:
 
 ## rule categories by priority
 
-| priority | category | impact |
-|----------|----------|--------|
-| 1 | correctness and duplication | critical |
-| 2 | title and description | high |
-| 3 | canonical and indexing | high |
-| 4 | social cards | high |
-| 5 | icons and manifest | medium |
-| 6 | structured data | medium |
-| 7 | locale and alternates | low-medium |
-| 8 | tool boundaries | critical |
+| priority | category                    | impact     |
+| -------- | --------------------------- | ---------- |
+| 1        | correctness and duplication | critical   |
+| 2        | title and description       | high       |
+| 3        | canonical and indexing      | high       |
+| 4        | social cards                | high       |
+| 5        | icons and manifest          | medium     |
+| 6        | structured data             | medium     |
+| 7        | locale and alternates       | low-medium |
+| 8        | tool boundaries             | critical   |
 
 ## quick reference
 

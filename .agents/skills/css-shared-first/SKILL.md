@@ -90,17 +90,23 @@ is intentional and is a maintenance feature, not a bug.
 ```css
 /* small */
 @media (width < 40em) {
-  .card-grid { gap: 1rem; }
+  .card-grid {
+    gap: 1rem;
+  }
 }
 
 /* medium */
 @media (40em <= width < 60em) {
-  .card-grid { gap: 2rem; }
+  .card-grid {
+    gap: 2rem;
+  }
 }
 
 /* large */
 @media (width >= 60em) {
-  .card-grid { gap: 3rem; }
+  .card-grid {
+    gap: 3rem;
+  }
 }
 ```
 
@@ -125,16 +131,22 @@ body {
 }
 
 @media (width >= 40em) {
-  body { gap: 2rem; }
+  body {
+    gap: 2rem;
+  }
 }
 
 @media (width >= 60em) {
   body {
     flex-direction: row; /* ← undoing column */
-    gap: 3rem;           /* ← overriding again */
+    gap: 3rem; /* ← overriding again */
   }
-  main  { flex: 3; }
-  aside { flex: 1; }
+  main {
+    flex: 3;
+  }
+  aside {
+    flex: 1;
+  }
 }
 ```
 
@@ -148,24 +160,36 @@ body {
 
 /* small + medium — column layout */
 @media (width < 60em) {
-  body { flex-direction: column; }
+  body {
+    flex-direction: column;
+  }
 }
 
 /* small */
 @media (width < 40em) {
-  body { gap: 1rem; }
+  body {
+    gap: 1rem;
+  }
 }
 
 /* medium */
 @media (40em <= width < 60em) {
-  body { gap: 2rem; }
+  body {
+    gap: 2rem;
+  }
 }
 
 /* large */
 @media (width >= 60em) {
-  body  { gap: 3rem; }
-  main  { flex: 3; }
-  aside { flex: 1; }
+  body {
+    gap: 3rem;
+  }
+  main {
+    flex: 3;
+  }
+  aside {
+    flex: 1;
+  }
 }
 ```
 
@@ -199,29 +223,35 @@ Use bounded size conditions otherwise:
 
 ```css
 /* shared */
-.card { display: grid; }
+.card {
+  display: grid;
+}
 
 /* narrow container */
 @container (width < 30em) {
-  .card { grid-template-columns: 1fr; }
+  .card {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* wide container */
 @container (width >= 30em) {
-  .card { grid-template-columns: 2fr 1fr; }
+  .card {
+    grid-template-columns: 2fr 1fr;
+  }
 }
 ```
 
 ## Quick Reference
 
-| Scenario | Where it goes |
-|---|---|
-| Same value at all sizes | Outside all queries (shared) |
-| Value unique to small only | `@media (width < <sm-upper>)` |
-| Value unique to medium only | `@media (<md-lower> <= width < <md-upper>)` |
-| Value for large and up | `@media (width >= <lg-lower>)` |
-| Shared across small + medium | `@media (width < <md-upper>)` |
-| Shared across medium + large | `@media (width >= <md-lower>)` |
+| Scenario                     | Where it goes                               |
+| ---------------------------- | ------------------------------------------- |
+| Same value at all sizes      | Outside all queries (shared)                |
+| Value unique to small only   | `@media (width < <sm-upper>)`               |
+| Value unique to medium only  | `@media (<md-lower> <= width < <md-upper>)` |
+| Value for large and up       | `@media (width >= <lg-lower>)`              |
+| Shared across small + medium | `@media (width < <md-upper>)`               |
+| Shared across medium + large | `@media (width >= <md-lower>)`              |
 
 ## Further Reading
 

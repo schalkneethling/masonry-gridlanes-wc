@@ -27,12 +27,12 @@ This skill teaches WHAT makes good tests and WHY certain patterns prevent failur
 
 ```javascript
 // ❌ Testing implementation details
-expect(component.internalState.items).toBeArray()
-expect(element.className).toBe('btn-primary')
+expect(component.internalState.items).toBeArray();
+expect(element.className).toBe("btn-primary");
 
 // ✅ Testing user-visible behavior
-await expect(page.getByRole('list')).toBeVisible()
-await expect(page.getByRole('button', { name: 'Submit' })).toBeEnabled()
+await expect(page.getByRole("list")).toBeVisible();
+await expect(page.getByRole("button", { name: "Submit" })).toBeEnabled();
 ```
 
 ### Test Isolation
@@ -57,19 +57,19 @@ await expect(page.getByRole('button', { name: 'Submit' })).toBeEnabled()
 ```javascript
 // ✅ Use beforeEach for common setup
 test.beforeEach(async ({ page }) => {
-  await page.goto('https://example.com/login')
-  await page.getByLabel('Username').fill('user')
-  await page.getByLabel('Password').fill('pass')
-  await page.getByRole('button', { name: 'Sign in' }).click()
-})
+  await page.goto("https://example.com/login");
+  await page.getByLabel("Username").fill("user");
+  await page.getByLabel("Password").fill("pass");
+  await page.getByRole("button", { name: "Sign in" }).click();
+});
 
-test('first test', async ({ page }) => {
+test("first test", async ({ page }) => {
   // Fresh signed-in state
-})
+});
 
-test('second test', async ({ page }) => {
+test("second test", async ({ page }) => {
   // Independent signed-in state
-})
+});
 ```
 
 **Advanced Pattern - Setup Projects**:
@@ -106,11 +106,13 @@ test('second test', async ({ page }) => {
 
 ```javascript
 // ✅ Mock third-party responses
-await page.route('**/api/external-service', route => route.fulfill({
-  status: 200,
-  body: JSON.stringify(expectedData),
-}))
-await page.goto('https://example.com')
+await page.route("**/api/external-service", (route) =>
+  route.fulfill({
+    status: 200,
+    body: JSON.stringify(expectedData),
+  }),
+);
+await page.goto("https://example.com");
 ```
 
 ## ARIA Snapshot Testing
@@ -120,6 +122,7 @@ await page.goto('https://example.com')
 **Definition**: ARIA snapshots provide a YAML representation of the accessibility tree - the semantic structure assistive technologies see.
 
 **Why This Is Powerful**:
+
 - Tests what actually matters: semantic structure and accessibility
 - Survives CSS refactoring and styling changes
 - Catches accessibility regressions automatically
@@ -131,7 +134,7 @@ await page.goto('https://example.com')
 
 ```javascript
 // Assert entire page structure matches
-await expect(page.locator('body')).toMatchAriaSnapshot(`
+await expect(page.locator("body")).toMatchAriaSnapshot(`
   - banner:
     - heading "Welcome to Our Site" [level=1]
     - navigation:
@@ -144,40 +147,43 @@ await expect(page.locator('body')).toMatchAriaSnapshot(`
       - list:
         - listitem: link "Article 1"
         - listitem: link "Article 2"
-`)
+`);
 ```
 
 ### Why ARIA Snapshots Over Individual Assertions
 
 **Traditional approach** (brittle):
+
 ```javascript
 // ❌ Many fragile assertions
-await expect(page.getByRole('heading', { level: 1 })).toHaveText('Welcome')
-await expect(page.getByRole('link', { name: 'Home' })).toBeVisible()
-await expect(page.getByRole('link', { name: 'About' })).toBeVisible()
-await expect(page.getByRole('link', { name: 'Contact' })).toBeVisible()
+await expect(page.getByRole("heading", { level: 1 })).toHaveText("Welcome");
+await expect(page.getByRole("link", { name: "Home" })).toBeVisible();
+await expect(page.getByRole("link", { name: "About" })).toBeVisible();
+await expect(page.getByRole("link", { name: "Contact" })).toBeVisible();
 // Breaks if order changes, doesn't validate hierarchy
 ```
 
 **ARIA snapshot approach** (resilient):
+
 ```javascript
 // ✅ Single assertion validates structure, hierarchy, and content
-await expect(page.locator('nav')).toMatchAriaSnapshot(`
+await expect(page.locator("nav")).toMatchAriaSnapshot(`
   - navigation:
     - link "Home"
     - link "About"
     - link "Contact"
-`)
+`);
 // Survives styling changes, validates semantic relationships
 ```
 
 ### YAML Format Guide
 
 **Basic structure**:
+
 ```yaml
 - role "accessible name" [attributes]:
-  - child role "name"
-  - child role "name"
+    - child role "name"
+    - child role "name"
 ```
 
 **Role**: ARIA role (heading, button, link, navigation, list, etc.)
@@ -185,13 +191,15 @@ await expect(page.locator('nav')).toMatchAriaSnapshot(`
 **Accessible name**: Text users hear from screen readers (in quotes)
 
 **Attributes**: ARIA attributes in square brackets
+
 - `[level=1]` - heading level
 - `[checked]` or `[checked=true]` - checkbox state
-- `[disabled]` - disabled state  
+- `[disabled]` - disabled state
 - `[expanded=true]` - expanded state
 - `[pressed=true]` - toggle button state
 
 **Examples**:
+
 ```javascript
 // Heading with level
 - heading "Dashboard" [level=1]
@@ -215,13 +223,14 @@ await expect(page.locator('nav')).toMatchAriaSnapshot(`
 ### Partial Matching Strategy
 
 **Default behavior - subset matching**:
+
 ```javascript
 // By default, matches if specified children exist (subset match)
-await expect(page.locator('ul')).toMatchAriaSnapshot(`
+await expect(page.locator("ul")).toMatchAriaSnapshot(`
   - list:
     - listitem: text "Feature A"
     - listitem: text "Feature C"
-`)
+`);
 // ✅ Passes even if Feature B exists between them
 // ✅ Passes even if more items exist after Feature C
 ```
@@ -231,36 +240,39 @@ await expect(page.locator('ul')).toMatchAriaSnapshot(`
 The `/children` property controls how strictly child elements are matched:
 
 **1. Subset matching (default)**:
+
 ```javascript
-await expect(page.locator('ul')).toMatchAriaSnapshot(`
+await expect(page.locator("ul")).toMatchAriaSnapshot(`
   - list:
     /children:
     - listitem: text "Feature A"
     - listitem: text "Feature B"
-`)
+`);
 // ✅ Matches if A and B exist in order
 // ✅ Other items can exist before, between, or after
 ```
 
 **2. Exact matching with `deep-equal`**:
+
 ```javascript
-await expect(page.locator('ul')).toMatchAriaSnapshot(`
+await expect(page.locator("ul")).toMatchAriaSnapshot(`
   - list:
     /children: deep-equal
     - listitem: text "Feature A"
     - listitem: text "Feature B"
     - listitem: text "Feature C"
-`)
+`);
 // ✅ Only passes if exactly these 3 items exist in this exact order
 // ❌ Fails if Feature D exists
 // ❌ Fails if order changes
 ```
 
 **3. No children validation**:
+
 ```javascript
-await expect(page.locator('nav')).toMatchAriaSnapshot(`
+await expect(page.locator("nav")).toMatchAriaSnapshot(`
   - navigation
-`)
+`);
 // ✅ Validates role exists
 // ✅ Doesn't check any children at all
 ```
@@ -268,9 +280,11 @@ await expect(page.locator('nav')).toMatchAriaSnapshot(`
 **When to use each mode**:
 
 **Subset (default)** - Most flexible:
+
 - Dynamic lists where count varies
 - Checking specific items exist
 - When order matters but count doesn't
+
 ```javascript
 // Check shopping cart has key items, ignore quantity
 - region "Cart":
@@ -280,9 +294,11 @@ await expect(page.locator('nav')).toMatchAriaSnapshot(`
 ```
 
 **deep-equal** - Most strict:
+
 - Fixed navigation structures
 - Known static content
 - When exact structure matters
+
 ```javascript
 // Main navigation must be exactly this
 - navigation:
@@ -295,8 +311,10 @@ await expect(page.locator('nav')).toMatchAriaSnapshot(`
 ```
 
 **No children** - Structure only:
+
 - When children are completely dynamic
 - Just validating container exists
+
 ```javascript
 // User feed could have any number of posts
 - main:
@@ -305,28 +323,31 @@ await expect(page.locator('nav')).toMatchAriaSnapshot(`
 ```
 
 **Partial matching by omitting attributes**:
+
 ```javascript
 // Match structure regardless of checkbox state
-await expect(page.locator('form')).toMatchAriaSnapshot(`
+await expect(page.locator("form")).toMatchAriaSnapshot(`
   - checkbox "Remember me"
   - button "Sign in"
-`)
+`);
 // ✅ Passes whether checkbox is checked or unchecked
 ```
 
 **Use regex for dynamic content**:
+
 ```javascript
-await expect(page.locator('header')).toMatchAriaSnapshot(`
+await expect(page.locator("header")).toMatchAriaSnapshot(`
   - banner:
     - heading /Welcome, .+/ [level=1]
     - text /Last login: \\d{4}-\\d{2}-\\d{2}/
-`)
+`);
 // Matches any username and date pattern
 ```
 
 ### When to Use ARIA Snapshots
 
 **Use ARIA snapshots for**:
+
 - Page layout validation (header, nav, main, footer structure)
 - Form structure testing (labels, inputs, buttons in correct hierarchy)
 - List and table structures
@@ -337,32 +358,35 @@ await expect(page.locator('header')).toMatchAriaSnapshot(`
 - Regression detection for structural changes
 
 **Use individual locators for**:
+
 - Specific interactions (clicking, typing)
 - Dynamic state changes
 - Conditional logic in tests
 - Precise timing requirements
 
 **Combine both**:
+
 ```javascript
 // Validate structure
-await expect(page.locator('dialog')).toMatchAriaSnapshot(`
+await expect(page.locator("dialog")).toMatchAriaSnapshot(`
   - dialog "Confirm Action":
     - heading "Are you sure?" [level=2]
     - text "This action cannot be undone"
     - button "Cancel"
     - button "Confirm"
-`)
+`);
 
 // Then interact with specific elements
-await page.getByRole('button', { name: 'Confirm' }).click()
+await page.getByRole("button", { name: "Confirm" }).click();
 ```
 
 ### Snapshot Generation Workflow
 
 **Generate snapshot on first run**:
+
 ```javascript
 // Write test with empty string
-await expect(page.locator('nav')).toMatchAriaSnapshot(``)
+await expect(page.locator("nav")).toMatchAriaSnapshot(``);
 
 // Run with update flag
 // npx playwright test --update-snapshots
@@ -371,6 +395,7 @@ await expect(page.locator('nav')).toMatchAriaSnapshot(``)
 ```
 
 **Update snapshots after changes**:
+
 ```bash
 # Update all snapshots
 npx playwright test --update-snapshots
@@ -380,6 +405,7 @@ npx playwright test -u
 ```
 
 **Review generated snapshots**:
+
 - Playwright creates patch files showing differences
 - Review patches before committing
 - Ensures structural changes are intentional
@@ -388,11 +414,12 @@ npx playwright test -u
 ### Common Patterns
 
 **Page layout validation**:
+
 ```javascript
-test('homepage structure', async ({ page }) => {
-  await page.goto('/')
-  
-  await expect(page.locator('body')).toMatchAriaSnapshot(`
+test("homepage structure", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(page.locator("body")).toMatchAriaSnapshot(`
     - banner:
       - link "Company Logo"
       - navigation:
@@ -405,31 +432,33 @@ test('homepage structure', async ({ page }) => {
         - button "Get Started"
     - contentinfo:
       - text "© 2024 Company Name"
-  `)
-})
+  `);
+});
 ```
 
 **Form structure testing**:
+
 ```javascript
-test('registration form', async ({ page }) => {
-  await page.goto('/register')
-  
-  await expect(page.locator('form')).toMatchAriaSnapshot(`
+test("registration form", async ({ page }) => {
+  await page.goto("/register");
+
+  await expect(page.locator("form")).toMatchAriaSnapshot(`
     - textbox "Email"
     - textbox "Password" [type="password"]
     - textbox "Confirm Password" [type="password"]  
     - checkbox "I agree to the terms"
     - button "Create Account"
-  `)
-})
+  `);
+});
 ```
 
 **Table structure validation**:
+
 ```javascript
-test('data table structure', async ({ page }) => {
-  await page.goto('/dashboard')
-  
-  await expect(page.locator('table')).toMatchAriaSnapshot(`
+test("data table structure", async ({ page }) => {
+  await page.goto("/dashboard");
+
+  await expect(page.locator("table")).toMatchAriaSnapshot(`
     - table:
       - rowgroup:
         - row:
@@ -441,30 +470,32 @@ test('data table structure', async ({ page }) => {
           - cell "John Doe"
           - cell "john@example.com"
           - cell "Active"
-  `)
-})
+  `);
+});
 ```
 
 **Modal dialog validation**:
+
 ```javascript
-test('confirmation dialog', async ({ page }) => {
-  await page.goto('/')
-  await page.getByRole('button', { name: 'Delete' }).click()
-  
-  await expect(page.locator('role=dialog')).toMatchAriaSnapshot(`
+test("confirmation dialog", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Delete" }).click();
+
+  await expect(page.locator("role=dialog")).toMatchAriaSnapshot(`
     - dialog "Confirm Deletion":
       - heading "Delete Item?" [level=2]
       - text "This action cannot be undone"
       - group "Actions":
         - button "Cancel"
         - button "Delete" [pressed=true]
-  `)
-})
+  `);
+});
 ```
 
 ### Integration with Accessibility Testing
 
 **ARIA snapshots enforce accessibility**:
+
 - Elements must have proper ARIA roles
 - Interactive elements need accessible names
 - Heading hierarchy must be correct
@@ -472,31 +503,34 @@ test('confirmation dialog', async ({ page }) => {
 - Lists must use proper structure
 
 **Example - catches accessibility issues**:
+
 ```html
 <!-- Bad HTML - no accessible name -->
 <button>
-  <svg><path d="..."/></svg>
+  <svg><path d="..." /></svg>
 </button>
 ```
 
 ```javascript
 // Snapshot test fails - button has no accessible name
-await expect(page.locator('button')).toMatchAriaSnapshot(`
+await expect(page.locator("button")).toMatchAriaSnapshot(`
   - button "Delete"  // ❌ Fails - actual button has no name
-`)
+`);
 ```
 
 Forces fix:
+
 ```html
 <!-- Good HTML - accessible name provided -->
 <button aria-label="Delete">
-  <svg><path d="..."/></svg>
+  <svg><path d="..." /></svg>
 </button>
 ```
 
 ### Best Practices
 
 **Scope snapshots appropriately**:
+
 ```javascript
 // ✅ Good - specific region
 await expect(page.locator('nav')).toMatchAriaSnapshot(...)
@@ -510,30 +544,33 @@ await expect(page.locator('main')).toMatchAriaSnapshot(...)
 ```
 
 **Use partial matching for dynamic content**:
+
 ```javascript
 // Shopping cart with variable item count
-await expect(page.locator('aside')).toMatchAriaSnapshot(`
+await expect(page.locator("aside")).toMatchAriaSnapshot(`
   - region "Cart":
     - heading /Cart \\(\\d+ items?\\)/ [level=2]
     - list:
       - listitem: text /.*/ 
       // Validates structure without checking all items
-`)
+`);
 ```
 
 **Combine with web-first assertions**:
+
 ```javascript
 // Validate structure exists
-await expect(page.locator('form')).toMatchAriaSnapshot(`
+await expect(page.locator("form")).toMatchAriaSnapshot(`
   - textbox "Email"
   - button "Submit"
-`)
+`);
 
 // Then validate dynamic states
-await expect(page.getByRole('button', { name: 'Submit' })).toBeDisabled()
+await expect(page.getByRole("button", { name: "Submit" })).toBeDisabled();
 ```
 
 **Version control snapshots**:
+
 - Commit snapshot files with code
 - Review snapshot changes in PRs
 - Treat snapshot updates as structural changes
@@ -553,9 +590,9 @@ This hierarchy is based on production experience with test maintenance:
    - Self-documenting
 
    ```javascript
-   page.getByRole('button', { name: 'Submit' })
-   page.getByRole('textbox', { name: 'Email' })
-   page.getByRole('heading', { name: 'Dashboard' })
+   page.getByRole("button", { name: "Submit" });
+   page.getByRole("textbox", { name: "Email" });
+   page.getByRole("heading", { name: "Dashboard" });
    ```
 
 2. **Label associations**
@@ -563,8 +600,8 @@ This hierarchy is based on production experience with test maintenance:
    - Follows form best practices
 
    ```javascript
-   page.getByLabel('Password')
-   page.getByLabel('Remember me')
+   page.getByLabel("Password");
+   page.getByLabel("Remember me");
    ```
 
 3. **Placeholder text**
@@ -572,7 +609,7 @@ This hierarchy is based on production experience with test maintenance:
    - Less stable than labels
 
    ```javascript
-   page.getByPlaceholder('Enter email address')
+   page.getByPlaceholder("Enter email address");
    ```
 
 4. **Text content**
@@ -580,7 +617,7 @@ This hierarchy is based on production experience with test maintenance:
    - Can break if copy changes
 
    ```javascript
-   page.getByText('Welcome back')
+   page.getByText("Welcome back");
    ```
 
 5. **Test IDs** (when semantic options aren't available)
@@ -588,7 +625,7 @@ This hierarchy is based on production experience with test maintenance:
    - Use data-testid attribute
 
    ```javascript
-   page.getByTestId('submit-button')
+   page.getByTestId("submit-button");
    ```
 
 6. **XPath/CSS selectors** (LAST RESORT)
@@ -610,21 +647,20 @@ This hierarchy is based on production experience with test maintenance:
 
 ```javascript
 // ❌ Breaks when designer changes styles
-page.locator('.btn-primary.submit-button.large')
+page.locator(".btn-primary.submit-button.large");
 
 // ✅ Survives style refactoring
-page.getByRole('button', { name: 'Submit Order' })
+page.getByRole("button", { name: "Submit Order" });
 ```
 
 **Deep DOM paths lose because**:
 
 ```javascript
 // ❌ Breaks when structure changes
-page.locator('div.container > section > form > button:nth-child(3)')
+page.locator("div.container > section > form > button:nth-child(3)");
 
 // ✅ Survives restructuring
-page.getByRole('form', { name: 'Checkout' })
-    .getByRole('button', { name: 'Submit' })
+page.getByRole("form", { name: "Checkout" }).getByRole("button", { name: "Submit" });
 ```
 
 ### Chaining and Filtering Patterns
@@ -633,13 +669,9 @@ page.getByRole('form', { name: 'Checkout' })
 
 ```javascript
 // ✅ Chain to narrow context - more resilient
-const product = page
-  .getByRole('listitem')
-  .filter({ hasText: 'Product 2' })
+const product = page.getByRole("listitem").filter({ hasText: "Product 2" });
 
-await product
-  .getByRole('button', { name: 'Add to cart' })
-  .click()
+await product.getByRole("button", { name: "Add to cart" }).click();
 ```
 
 **Filtering Strategies**:
@@ -691,10 +723,10 @@ npx playwright codegen https://example.com
 
 ```javascript
 // ✅ Web-first assertion - waits automatically
-await expect(page.getByText('welcome')).toBeVisible()
+await expect(page.getByText("welcome")).toBeVisible();
 
 // ❌ Manual check - no waiting, no retry
-expect(await page.getByText('welcome').isVisible()).toBe(true)
+expect(await page.getByText("welcome").isVisible()).toBe(true);
 ```
 
 ### Why Manual Assertions Fail
@@ -703,8 +735,8 @@ expect(await page.getByText('welcome').isVisible()).toBe(true)
 
 ```javascript
 // ❌ WRONG - checks exactly once
-const visible = await page.getByText('welcome').isVisible()
-expect(visible).toBe(true)
+const visible = await page.getByText("welcome").isVisible();
+expect(visible).toBe(true);
 ```
 
 What happens:
@@ -718,7 +750,7 @@ What happens:
 
 ```javascript
 // ✅ RIGHT - polls until timeout
-await expect(page.getByText('welcome')).toBeVisible()
+await expect(page.getByText("welcome")).toBeVisible();
 ```
 
 What happens:
@@ -734,46 +766,46 @@ What happens:
 **Visibility Assertions**:
 
 ```javascript
-await expect(locator).toBeVisible()      // Element is visible
-await expect(locator).toBeHidden()       // Element is not visible
+await expect(locator).toBeVisible(); // Element is visible
+await expect(locator).toBeHidden(); // Element is not visible
 ```
 
 **State Assertions**:
 
 ```javascript
-await expect(locator).toBeEnabled()      // Interactive element enabled
-await expect(locator).toBeDisabled()     // Interactive element disabled
-await expect(locator).toBeChecked()      // Checkbox/radio checked
-await expect(locator).toBeFocused()      // Element has keyboard focus
+await expect(locator).toBeEnabled(); // Interactive element enabled
+await expect(locator).toBeDisabled(); // Interactive element disabled
+await expect(locator).toBeChecked(); // Checkbox/radio checked
+await expect(locator).toBeFocused(); // Element has keyboard focus
 ```
 
 **Content Assertions**:
 
 ```javascript
-await expect(locator).toHaveText('exact text')           // Exact match
-await expect(locator).toContainText('partial')           // Substring match
-await expect(locator).toHaveValue('input value')         // Input value
-await expect(locator).toHaveAttribute('href', '/about')  // Attribute value
+await expect(locator).toHaveText("exact text"); // Exact match
+await expect(locator).toContainText("partial"); // Substring match
+await expect(locator).toHaveValue("input value"); // Input value
+await expect(locator).toHaveAttribute("href", "/about"); // Attribute value
 ```
 
 **Collection Assertions**:
 
 ```javascript
-await expect(locator).toHaveCount(5)     // Exact number of elements
+await expect(locator).toHaveCount(5); // Exact number of elements
 ```
 
 **Advanced Patterns**:
 
 ```javascript
 // Multiple conditions
-await expect(locator).toBeVisible()
-await expect(locator).toHaveClass(/active/)
+await expect(locator).toBeVisible();
+await expect(locator).toHaveClass(/active/);
 
 // Negation
-await expect(locator).not.toBeVisible()
+await expect(locator).not.toBeVisible();
 
 // Custom timeout for slow operations
-await expect(locator).toBeVisible({ timeout: 10000 })
+await expect(locator).toBeVisible({ timeout: 10000 });
 ```
 
 ### Soft Assertions Pattern
@@ -782,12 +814,12 @@ await expect(locator).toBeVisible({ timeout: 10000 })
 
 ```javascript
 // Continue test even if assertions fail
-await expect.soft(page.getByTestId('status')).toHaveText('Success')
-await expect.soft(page.getByTestId('count')).toHaveText('42')
-await expect.soft(page.getByTestId('user')).toHaveText('John')
+await expect.soft(page.getByTestId("status")).toHaveText("Success");
+await expect.soft(page.getByTestId("count")).toHaveText("42");
+await expect.soft(page.getByTestId("user")).toHaveText("John");
 
 // Test continues - all failures reported at end
-await page.getByRole('link', { name: 'next' }).click()
+await page.getByRole("link", { name: "next" }).click();
 ```
 
 **When to use**:
@@ -822,10 +854,10 @@ await page.getByRole('link', { name: 'next' }).click()
 **Enable file-level parallelism**:
 
 ```javascript
-test.describe.configure({ mode: 'parallel' })
+test.describe.configure({ mode: "parallel" });
 
-test('runs concurrently 1', async ({ page }) => {})
-test('runs concurrently 2', async ({ page }) => {})
+test("runs concurrently 1", async ({ page }) => {});
+test("runs concurrently 2", async ({ page }) => {});
 ```
 
 **When to use**:
@@ -840,95 +872,90 @@ test('runs concurrently 2', async ({ page }) => {})
 
 ```javascript
 // ✅ Web-first assertions handle delays automatically
-await expect(page.getByText('Loaded')).toBeVisible()
+await expect(page.getByText("Loaded")).toBeVisible();
 
 // ❌ Don't add manual waits
-await page.waitForTimeout(2000) // brittle, arbitrary
+await page.waitForTimeout(2000); // brittle, arbitrary
 ```
 
 ### Multiple Elements Pattern
 
 ```javascript
 // Get count
-const items = page.getByRole('listitem')
-const count = await items.count()
+const items = page.getByRole("listitem");
+const count = await items.count();
 
 // Iterate
-for (let i = 0; i < await items.count(); i++) {
-  await items.nth(i).click()
+for (let i = 0; i < (await items.count()); i++) {
+  await items.nth(i).click();
 }
 
 // Filter and act on first match
-await page
-  .getByRole('listitem')
-  .filter({ hasText: 'Premium' })
-  .first()
-  .click()
+await page.getByRole("listitem").filter({ hasText: "Premium" }).first().click();
 ```
 
 ### Form Interaction Patterns
 
 ```javascript
 // Text inputs
-await page.getByLabel('Email').fill('user@example.com')
+await page.getByLabel("Email").fill("user@example.com");
 
 // Clear and fill
-await page.getByLabel('Email').clear()
-await page.getByLabel('Email').fill('new@example.com')
+await page.getByLabel("Email").clear();
+await page.getByLabel("Email").fill("new@example.com");
 
 // Checkboxes
-await page.getByLabel('Subscribe').check()
-await page.getByLabel('Unsubscribe').uncheck()
+await page.getByLabel("Subscribe").check();
+await page.getByLabel("Unsubscribe").uncheck();
 
 // Radio buttons (check the one you want)
-await page.getByLabel('Option A').check()
+await page.getByLabel("Option A").check();
 
 // Select dropdowns
-await page.getByLabel('Country').selectOption('USA')
-await page.getByLabel('Country').selectOption({ label: 'United States' })
+await page.getByLabel("Country").selectOption("USA");
+await page.getByLabel("Country").selectOption({ label: "United States" });
 
 // File uploads
-await page.getByLabel('Upload').setInputFiles('file.pdf')
-await page.getByLabel('Upload').setInputFiles(['file1.pdf', 'file2.pdf'])
+await page.getByLabel("Upload").setInputFiles("file.pdf");
+await page.getByLabel("Upload").setInputFiles(["file1.pdf", "file2.pdf"]);
 ```
 
 ### Network Request Patterns
 
 ```javascript
 // Wait for specific request
-const request = page.waitForRequest('**/api/data')
-await page.getByRole('button', { name: 'Load' }).click()
-await request
+const request = page.waitForRequest("**/api/data");
+await page.getByRole("button", { name: "Load" }).click();
+await request;
 
 // Wait for response
-const response = page.waitForResponse('**/api/data')
-await page.getByRole('button', { name: 'Load' }).click()
-await response
+const response = page.waitForResponse("**/api/data");
+await page.getByRole("button", { name: "Load" }).click();
+await response;
 
 // Mock API response
-await page.route('**/api/data', route => route.fulfill({
-  status: 200,
-  contentType: 'application/json',
-  body: JSON.stringify({ success: true }),
-}))
+await page.route("**/api/data", (route) =>
+  route.fulfill({
+    status: 200,
+    contentType: "application/json",
+    body: JSON.stringify({ success: true }),
+  }),
+);
 ```
 
 ### Navigation Patterns
 
 ```javascript
 // Wait for navigation to complete
-await page.goto('https://example.com', { 
-  waitUntil: 'networkidle'  // or 'load', 'domcontentloaded'
-})
+await page.goto("https://example.com", {
+  waitUntil: "networkidle", // or 'load', 'domcontentloaded'
+});
 
 // Click and wait for navigation
-await Promise.all([
-  page.waitForNavigation(),
-  page.getByRole('link', { name: 'Next' }).click(),
-])
+await Promise.all([page.waitForNavigation(), page.getByRole("link", { name: "Next" }).click()]);
 
 // Wait for URL pattern
-await page.waitForURL('**/dashboard')
+await page.waitForURL("**/dashboard");
 ```
 
 ## Anti-Patterns to Avoid
@@ -937,10 +964,10 @@ await page.waitForURL('**/dashboard')
 
 ```javascript
 // ❌ NEVER do this
-await page.waitForTimeout(5000)
+await page.waitForTimeout(5000);
 
 // ✅ Use web-first assertions
-await expect(page.getByText('Loaded')).toBeVisible()
+await expect(page.getByText("Loaded")).toBeVisible();
 ```
 
 **Why**:
@@ -953,54 +980,57 @@ await expect(page.getByText('Loaded')).toBeVisible()
 
 ```javascript
 // ❌ Manual promise handling
-page.getByRole('button').click().then(() => {
-  return page.getByText('Success').isVisible()
-})
+page
+  .getByRole("button")
+  .click()
+  .then(() => {
+    return page.getByText("Success").isVisible();
+  });
 
 // ✅ Use async/await
-await page.getByRole('button').click()
-await expect(page.getByText('Success')).toBeVisible()
+await page.getByRole("button").click();
+await expect(page.getByText("Success")).toBeVisible();
 ```
 
 ### Don't Re-Query the Same Element
 
 ```javascript
 // ❌ Querying multiple times
-await page.getByRole('button', { name: 'Submit' }).click()
-await expect(page.getByRole('button', { name: 'Submit' })).toBeDisabled()
+await page.getByRole("button", { name: "Submit" }).click();
+await expect(page.getByRole("button", { name: "Submit" })).toBeDisabled();
 
 // ✅ Store locator, more efficient
-const submitBtn = page.getByRole('button', { name: 'Submit' })
-await submitBtn.click()
-await expect(submitBtn).toBeDisabled()
+const submitBtn = page.getByRole("button", { name: "Submit" });
+await submitBtn.click();
+await expect(submitBtn).toBeDisabled();
 ```
 
 ### Don't Test Implementation Details
 
 ```javascript
 // ❌ Testing internal state
-expect(component._internalState).toBe('loading')
-expect(element.className).toContain('loading')
+expect(component._internalState).toBe("loading");
+expect(element.className).toContain("loading");
 
 // ✅ Test user-visible behavior
-await expect(page.getByRole('status')).toHaveText('Loading...')
-await expect(page.getByRole('progressbar')).toBeVisible()
+await expect(page.getByRole("status")).toHaveText("Loading...");
+await expect(page.getByRole("progressbar")).toBeVisible();
 ```
 
 ### Don't Use Non-Resilient Selectors
 
 ```javascript
 // ❌ CSS classes
-page.locator('.btn-primary')
+page.locator(".btn-primary");
 
 // ❌ Deep DOM paths
-page.locator('div > section > form > button:nth-child(3)')
+page.locator("div > section > form > button:nth-child(3)");
 
 // ❌ Generic selectors
-page.locator('button')
+page.locator("button");
 
 // ✅ Role-based with name
-page.getByRole('button', { name: 'Submit Order' })
+page.getByRole("button", { name: "Submit Order" });
 ```
 
 ## Integration with playwright-cli

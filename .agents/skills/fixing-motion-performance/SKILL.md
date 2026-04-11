@@ -23,6 +23,7 @@ Do not migrate animation libraries unless explicitly requested. Apply rules with
 ## when to apply
 
 Reference these guidelines when:
+
 - adding or changing UI animations (CSS, WAAPI, Motion, rAF, GSAP)
 - refactoring janky interactions or transitions
 - implementing scroll-linked motion or reveal-on-scroll
@@ -37,17 +38,17 @@ Reference these guidelines when:
 
 ## rule categories by priority
 
-| priority | category | impact |
-|----------|----------|--------|
-| 1 | never patterns | critical |
-| 2 | choose the mechanism | critical |
-| 3 | measurement | high |
-| 4 | scroll | high |
-| 5 | paint | medium-high |
-| 6 | layers | medium |
-| 7 | blur and filters | medium |
-| 8 | view transitions | low |
-| 9 | tool boundaries | critical |
+| priority | category             | impact      |
+| -------- | -------------------- | ----------- |
+| 1        | never patterns       | critical    |
+| 2        | choose the mechanism | critical    |
+| 3        | measurement          | high        |
+| 4        | scroll               | high        |
+| 5        | paint                | medium-high |
+| 6        | layers               | medium      |
+| 7        | blur and filters     | medium      |
+| 8        | view transitions     | low         |
+| 9        | tool boundaries      | critical    |
 
 ## quick reference
 
@@ -123,24 +124,37 @@ Reference these guidelines when:
 
 ```css
 /* layout thrashing: animate transform instead of width */
-/* before */ .panel { transition: width 0.3s; }
-/* after */  .panel { transition: transform 0.3s; }
+/* before */
+.panel {
+  transition: width 0.3s;
+}
+/* after */
+.panel {
+  transition: transform 0.3s;
+}
 
 /* scroll-linked: use scroll-timeline instead of JS */
-/* before */ window.addEventListener('scroll', () => el.style.opacity = scrollY / 500)
-/* after */  .reveal { animation: fade-in linear; animation-timeline: view(); }
+/* before */
+window.addEventListener('scroll', () => el.style.opacity = scrollY / 500)
+/* after */  .reveal {
+  animation: fade-in linear;
+  animation-timeline: view();
+}
 ```
 
 ```js
 // measurement: batch reads before writes (FLIP)
 // before — layout thrash
-el.style.left = el.getBoundingClientRect().left + 10 + 'px';
+el.style.left = el.getBoundingClientRect().left + 10 + "px";
 // after — measure once, animate via transform
 const first = el.getBoundingClientRect();
-el.classList.add('moved');
+el.classList.add("moved");
 const last = el.getBoundingClientRect();
 el.style.transform = `translateX(${first.left - last.left}px)`;
-requestAnimationFrame(() => { el.style.transition = 'transform 0.3s'; el.style.transform = ''; });
+requestAnimationFrame(() => {
+  el.style.transition = "transform 0.3s";
+  el.style.transform = "";
+});
 ```
 
 ## review guidance

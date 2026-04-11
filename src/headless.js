@@ -17,6 +17,24 @@ import { estimateTextBlockHeightCached, estimateTextHeightFromMetrics } from "./
  *   inlineChrome: number,
  *   blockChrome: number,
  * }} SharedPretextMetrics
+ * @typedef {{
+ *   top: number,
+ *   left: number,
+ *   width: number,
+ *   track: number,
+ *   span: number,
+ *   index: number,
+ *   height: number,
+ * }} HeadlessPosition
+ * @typedef {{
+ *   orientation: "columns",
+ *   trackCount: number,
+ *   trackSize: number,
+ *   extent: number,
+ *   positions: HeadlessPosition[],
+ *   columnWidth: number,
+ *   totalHeight: number,
+ * }} HeadlessMasonryLayout
  */
 
 /**
@@ -66,6 +84,7 @@ export function sampleTextMetricsFromElement(element) {
  *   metrics: SharedPretextMetrics,
  *   items: HeadlessTextItem[],
  * }} options
+ * @returns {HeadlessMasonryLayout}
  */
 export function layoutPretextMasonry(options) {
   const gap = Math.max(0, options.gap ?? 0);
@@ -105,7 +124,7 @@ export function layoutPretextMasonry(options) {
     }),
   });
 
-  return {
+  return /** @type {HeadlessMasonryLayout} */ ({
     ...layout,
     positions: layout.positions.map((position, index) => ({
       ...position,
@@ -113,5 +132,5 @@ export function layoutPretextMasonry(options) {
     })),
     columnWidth,
     totalHeight: layout.extent,
-  };
+  });
 }

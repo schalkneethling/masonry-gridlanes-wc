@@ -16,23 +16,9 @@
   ],
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.mts",
-      "default": "./dist/index.mjs"
-    },
-    "./headless": {
-      "types": "./dist/headless.d.mts",
-      "default": "./dist/headless.mjs"
-    },
-    "./pretext": {
-      "types": "./dist/pretext-entry.d.mts",
-      "default": "./dist/pretext-entry.mjs"
-    },
-    "./pretext-entry": {
-      "types": "./dist/pretext-entry.d.mts",
-      "default": "./dist/pretext-entry.mjs"
-    },
-    "./masonry-grid-lanes.css": "./dist/masonry-grid-lanes.css",
+    ".": "./dist/index.mjs",
+    "./headless": "./dist/headless.mjs",
+    "./pretext-entry": "./dist/pretext-entry.mjs",
     "./package.json": "./package.json"
   },
   "publishConfig": {
