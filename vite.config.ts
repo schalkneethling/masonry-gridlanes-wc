@@ -27,6 +27,21 @@ export default defineConfig({
     },
     exports: true,
   },
+  build: {
+    outDir: "dist-demo",
+    rollupOptions: {
+      input: {
+        demos: "demos/index.html",
+        images: "demos/images.html",
+        blueskyText: "demos/bluesky-text.html",
+        blueskyCards: "demos/bluesky-cards.html",
+        mixed: "demos/mixed.html",
+        rows: "demos/rows.html",
+        referenceSwitch: "demos/reference-switch.html",
+        playground: "demos/playground.html",
+      },
+    },
+  },
   test: {
     environment: "happy-dom",
     setupFiles: ["./tests/setup-polyfill.ts"],

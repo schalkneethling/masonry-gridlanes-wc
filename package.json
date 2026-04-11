@@ -26,6 +26,7 @@
   },
   "scripts": {
     "build": "vp pack",
+    "build:demo": "vp build",
     "dev": "vp pack --watch",
     "demo": "vp dev --host 127.0.0.1 --port 5173",
     "test": "vp test",

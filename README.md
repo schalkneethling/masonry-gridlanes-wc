@@ -1,12 +1,12 @@
 # @schalkneethling/masonry-gridlanes-wc
 
-`@schalkneethling/masonry-gridlanes-wc` is a native-first masonry library for the modern web. It wraps the emerging CSS Grid Lanes model in a light-DOM custom element, falls back to a spec-shaped JavaScript placement engine where `display: grid-lanes` is not available yet, and includes Pretext-powered helpers for large text-card datasets.
+`@schalkneethling/masonry-gridlanes-wc` is a native-first masonry library for the modern web. It wraps the emerging CSS Grid Lanes model in a light-DOM custom element, falls back to a spec-shaped JavaScript placement engine where `display: grid-lanes` is not available yet, and includes [Pretext-powered](https://github.com/chenglou/pretext) helpers for large text-card datasets.
 
 ## Why this library
 
 - Native first: when the browser supports `display: grid-lanes`, the component gets out of the way and hands layout to the browser.
 - Spec-aligned fallback: when native support is missing, the fallback keeps the same mental model as Grid Lanes instead of falling back to an unrelated layout system.
-- Performance-aware: rich cards can use DOM measurement, while text-only collections can opt into Pretext to avoid repeated layout reads on resize.
+- Performance-aware: rich cards can use DOM measurement, while text-only collections can opt into [Pretext](https://github.com/chenglou/pretext) to avoid repeated layout reads on resize.
 
 ## Install
 
@@ -42,7 +42,7 @@ await adoptMasonryGridLanesStyles(document);
 </masonry-grid-lanes>
 ```
 
-## Row mode
+## Row mode (experimental)
 
 Row mode is supported through `mode="rows"`, `min-row-height`, and, for the clearest
 `0.1.0` behavior, an explicit `row-count`:
@@ -117,7 +117,7 @@ This first public release is intended for real projects, with a clear scope.
 - experimental but promising: row mode, especially when authors treat the host as the scroll surface and give cards intentional inline-size limits
 - forward-looking by design: native `display: grid-lanes` support is still emerging, so this library is intentionally built around a platform feature that will continue to evolve
 
-The goal of `0.1.0` is not to claim that every masonry use case is solved forever. It is to provide a practical, well-tested, native-first foundation that developers can use now while the platform catches up.
+The goal of `0.1.0` is not to claim that every masonry use case is solved forever. It is to provide a practical, well-tested, native-first foundation that developers can use now while the specification and the platform evolves.
 
 ## Pretext usage
 
@@ -175,6 +175,7 @@ vp install
 vp check src tests e2e demos playwright.config.ts vite.config.ts package.json tsconfig.json
 vp test
 vp run demo
+vp run build:demo
 ```
 
 Equivalent package-manager commands:
@@ -192,6 +193,16 @@ pnpm test
 pnpm run check
 pnpm run demo
 ```
+
+## Demo deployment
+
+The demos are built as a separate multi-page site for static hosting.
+
+- local preview: `vp run demo`
+- production demo build: `vp run build:demo`
+- Netlify publish directory: `dist-demo`
+
+The Netlify config redirects `/` to `/demos/index.html` so the deployed site lands on the demo hub.
 
 ## Release workflow
 

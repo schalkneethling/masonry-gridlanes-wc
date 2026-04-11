@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Demo · Image masonry</title>
+    <script type="module" crossorigin src="/assets/images-wJxA6-Uf.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-iJ-6Fn-a.js">
+    <link rel="modulepreload" crossorigin href="/assets/src-bF3WGnnR.js">
+    <link rel="modulepreload" crossorigin href="/assets/init-demo-0aus8wpn.js">
+    <link rel="modulepreload" crossorigin href="/assets/unsplash-pool-DmbpvyC5.js">
+    <link rel="stylesheet" crossorigin href="/assets/demos-theme-Cb3E_9oe.css">
+  </head>
+  <body>
+    <div class="demo-wrap">
+      <a class="demo-back" href="/demos/index.html">← Demos</a>
+      <p class="demo-kicker">Unsplash</p>
+      <h1 class="demo-title">Image masonry</h1>
+      <p class="demo-lede">
+        Varied crops and aspect ratios. Each load shuffles a subset of curated photos so column
+        packing stays interesting.
+      </p>
+      <p id="status" class="demo-status" aria-live="polite"></p>
+
+      <masonry-grid-lanes class="demo-grid-host" min-column-width="240" gap="18">
+      </masonry-grid-lanes>
+
+      <footer class="demo-foot">
+        <p>
+          Photos from
+          <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer">Unsplash</a> (see
+          per-image credits under each tile). Hotlinking is acceptable for this demo; production
+          apps should use the
+          <a href="https://unsplash.com/developers" target="_blank" rel="noopener noreferrer"
+            >Unsplash API</a
+          >
+          and their
+          <a href="https://unsplash.com/terms" target="_blank" rel="noopener noreferrer">terms</a>.
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
