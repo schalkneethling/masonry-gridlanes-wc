@@ -1,8 +1,8 @@
 [build]
-  command = "vp run build:demo"
-  publish = "dist-demo"
+command = "vp run build:demo"
+publish = "dist-demo"
 
 [[redirects]]
-  from = "/"
-  to = "/demos/index.html"
-  status = 302
+from = "/"
+to = "/demos/index.html"
+status = 302
