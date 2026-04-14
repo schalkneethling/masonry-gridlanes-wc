@@ -34,8 +34,8 @@ export function mountRuntimeNotice(options = {}) {
   }
 
   notice.textContent = runtimeSupports
-    ? "Your browser supports grid lanes; the library is stepping aside."
-    : "Your browser does not support grid lanes; layout handled by the library.";
+    ? "Your browser supports grid lanes; the browser is handling layout."
+    : "Your browser does not support grid lanes; the library is using its supported fallback layout.";
 }
 
 /**
