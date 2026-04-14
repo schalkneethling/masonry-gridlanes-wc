@@ -1,12 +1,26 @@
 # @schalkneethling/masonry-gridlanes-wc
 
-`@schalkneethling/masonry-gridlanes-wc` is a native-first masonry library for the modern web. It wraps the emerging CSS Grid Lanes model in a light-DOM custom element, falls back to a spec-shaped JavaScript placement engine where `display: grid-lanes` is not available yet, and includes [Pretext-powered](https://github.com/chenglou/pretext) helpers for large text-card datasets.
+`@schalkneethling/masonry-gridlanes-wc` is a native-first masonry library for the modern web. It wraps the emerging CSS Grid Lanes model in a light-DOM custom element, lets the browser own layout whenever `display: grid-lanes` is supported, falls back to a spec-shaped JavaScript placement engine where it is not, and includes [Pretext-powered](https://github.com/chenglou/pretext) helpers for large text-card datasets.
 
 ## Why this library
 
 - Native first: when the browser supports `display: grid-lanes`, the component gets out of the way and hands layout to the browser.
 - Spec-aligned fallback: when native support is missing, the fallback keeps the same mental model as Grid Lanes instead of falling back to an unrelated layout system.
 - Performance-aware: rich cards can use DOM measurement, while text-only collections can opt into [Pretext](https://github.com/chenglou/pretext) to avoid repeated layout reads on resize.
+
+## Native vs fallback
+
+This package has two distinct runtime paths:
+
+- Native path: if the browser supports `display: grid-lanes`, the host uses native CSS Grid Lanes and the browser decides placement.
+- Fallback path: if the browser does not support `display: grid-lanes`, the component measures items and applies absolute positioning with a JavaScript placement engine.
+
+That distinction matters when you are comparing behavior to a future browser implementation:
+
+- in native mode, the generated result should be as close as possible to platform behavior because the platform is doing the layout
+- in fallback mode, the goal is to stay close to the Grid Lanes mental model and placement rules for the supported authoring surface, not to polyfill every part of CSS Grid
+
+In other words: this library is native-first, and the fallback is intentionally spec-shaped rather than a claim of full CSS feature parity.
 
 ## Install
 
@@ -101,6 +115,14 @@ When native Grid Lanes is unavailable, the component fallback preserves these in
 
 The fallback is intentionally aligned to the current Grid Lanes direction of CSS Grid Level 3, not the older `grid-template-rows: masonry` proposal.
 
+The most important scope boundary is that the fallback is not a full Grid Lanes polyfill. It is designed to match the placement behavior for the inputs above, while keeping the same authoring mental model across supported and unsupported browsers.
+
+What that means in practice:
+
+- closest parity today: column masonry, `gap`, track sizing driven by `min-column-width` or `min-row-height`, `row-count`, `flow-tolerance`, `order`, and simple grid-axis placement and spanning
+- not promised as full parity: every possible CSS Grid feature, arbitrary `grid-template-*` authoring, or the entire CSS Grid placement grammar
+- row mode is intentionally more opinionated in fallback so it stays usable today: authors should treat the host as the scroll surface and give cards intentional inline-size limits
+
 For row mode specifically, the fallback now:
 
 - keeps the host contained inside its parent instead of expanding the whole page width
@@ -113,7 +135,7 @@ For row mode specifically, the fallback now:
 
 This first public release is intended for real projects, with a clear scope.
 
-- strongest today: column masonry, spec-aligned fallback behavior, and text-heavy layouts using Pretext
+- strongest today: native Grid Lanes when available, column masonry fallback behavior, and text-heavy layouts using Pretext
 - experimental but promising: row mode, especially when authors treat the host as the scroll surface and give cards intentional inline-size limits
 - forward-looking by design: native `display: grid-lanes` support is still emerging, so this library is intentionally built around a platform feature that will continue to evolve
 
