@@ -8,7 +8,7 @@ test("reference switcher reproduces fixed-row horizontal masonry with row-count"
 
   const grid = page.locator("#switcher-grid");
   const shell = page.locator(".demo-grid-shell");
-  await expect(page.locator("#runtime-notice")).toContainText(/layout handled by the library/i);
+  await expect(page.locator("#runtime-notice")).toHaveAttribute("data-runtime-layout", "fallback");
   await expect(grid.locator(":scope > *")).toHaveCount(9);
   await expect(grid).toHaveAttribute("min-column-width", "320");
 
