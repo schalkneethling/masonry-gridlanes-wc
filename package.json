@@ -41,7 +41,7 @@
   "devDependencies": {
     "@playwright/test": "^1.59.1",
     "@types/node": "^25.5.0",
-    "@typescript/native-preview": "7.0.0-dev.20260423.1",
+    "@typescript/native-preview": "7.0.0-dev.20260502.1",
     "bumpp": "^11.0.1",
     "happy-dom": "^20.9.0",
     "typescript": "^6.0.3",
