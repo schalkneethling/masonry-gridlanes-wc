@@ -36,7 +36,7 @@
     "prepare": "vp config"
   },
   "dependencies": {
-    "@chenglou/pretext": "^0.0.5"
+    "@chenglou/pretext": "^0.0.6"
   },
   "devDependencies": {
     "@playwright/test": "^1.59.1",
