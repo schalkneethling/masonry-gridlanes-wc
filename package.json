@@ -36,16 +36,16 @@
     "prepare": "vp config"
   },
   "dependencies": {
-    "@chenglou/pretext": "^0.0.5"
+    "@chenglou/pretext": "^0.0.8"
   },
   "devDependencies": {
-    "@playwright/test": "^1.59.1",
-    "@types/node": "^25.5.0",
-    "@typescript/native-preview": "7.0.0-dev.20260411.1",
-    "bumpp": "^11.0.1",
-    "happy-dom": "^20.8.9",
-    "typescript": "^6.0.2",
-    "vite-plus": "^0.1.14"
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^26.0.0",
+    "@typescript/native-preview": "7.0.0-dev.20260621.1",
+    "bumpp": "^11.1.0",
+    "happy-dom": "^20.10.1",
+    "typescript": "^6.0.3",
+    "vite-plus": "^0.1.20"
   },
   "packageManager": "pnpm@10.33.0",
   "pnpm": {
