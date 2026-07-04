@@ -39,7 +39,7 @@
     "@chenglou/pretext": "^0.0.8"
   },
   "devDependencies": {
-    "@playwright/test": "^1.60.0",
+    "@playwright/test": "^1.61.1",
     "@types/node": "^26.0.0",
     "@typescript/native-preview": "7.0.0-dev.20260621.1",
     "bumpp": "^11.1.0",
